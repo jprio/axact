@@ -14,7 +14,7 @@ async fn main() {
     let router = Router::new()
         .route("/", get(root_get))
         .route("/api/cpus", get(cpus_get))
-        .route("/index.js", get(index_js_get))
+        .route("/index.mjs", get(index_mjs_get))
         .with_state(AppState { sys: Arc::new(Mutex::new(System::new_all())) });
 
     let server = Server::bind(&"0.0.0.0:7000".parse().unwrap()).serve(router.into_make_service());
@@ -30,8 +30,8 @@ async fn root_get() -> impl IntoResponse {
     Html(tokio::fs::read_to_string("src/index.html").await.unwrap())
 }
 #[axum::debug_handler]
-async fn index_js_get() -> impl IntoResponse {
-    let js = tokio::fs::read_to_string("src/index.js").await.unwrap();
+async fn index_mjs_get() -> impl IntoResponse {
+    let js = tokio::fs::read_to_string("src/index.mjs").await.unwrap();
     Response::builder()
         .header("content-type", "application/javascript;charset=utf-8")
         .body(js)
