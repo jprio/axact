@@ -15,11 +15,13 @@ function App(props) {
 }
 document.addEventListener("DOMContentLoaded", () => {
     let i = 0;
-    setInterval(async () => {
-        i += 1;
-        let response = await fetch("/api/cpus");
-        let json = await response.json();
+    let url = new URL('/realtime/cpus', window.location.href);
+    url.protocol = url.protocol.replace('http', 'ws');
+    let ws = new WebSocket(url.href);
+    ws.onmessage = (ev) => {
+        let json = JSON.parse(ev.data);
         console.log(json);
         render(html`<${App} cpus=${json}></${App}>`, document.body);
-    }, 1000);
+
+    };
 })
